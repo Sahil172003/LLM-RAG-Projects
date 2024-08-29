@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Search</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 2em;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #4CAF50;
+        }
+        input[type="text"] {
+            padding: 0.8em;
+            margin: 1em 0;
+            width: calc(100% - 2em);
+            box-sizing: border-box;
+            background-color: #333;
+            border: 1px solid #555;
+            color: #ffffff;
+            border-radius: 6px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 0.8em 1.5em;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: #ff6b6b;
+            margin-top: 1em;
+        }
+        .company-list {
+            text-align: left;
+            margin-top: 2em;
+            padding: 0 1em;
+        }
+        .company-list ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .company-list li {
+            margin-bottom: 0.5em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Company Search</h1>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="company_name" placeholder="Enter company name" required>
+            <input type="submit" value="Search">
+        </form>
+
+        <div class="company-list">
+            <h2>Nifty Fifty Companies</h2>
+            <ul>
+                <li>Adani Enterprises</li>
+                <li>Asian Paints</li>
+                <li>Axis Bank</li>
+                <li>Bajaj Auto</li>
+                <li>Bajaj Finance</li>
+                <li>Bajaj Finserv</li>
+                <li>Bharti Airtel</li>
+                <li>BPCL</li>
+                <li>Britannia Industries</li>
+                <li>Cipla</li>
+                <li>Coal India</li>
+                <li>Divis Laboratories</li>
+                <li>Dr. Reddy's Laboratories</li>
+                <li>Eicher Motors</li>
+                <li>Grasim Industries</li>
+                <li>HCL Technologies</li>
+                <li>HDFC</li>
+                <li>HDFC Bank</li>
+                <li>Hero MotoCorp</li>
+                <li>Hindalco Industries</li>
+                <li>Hindustan Unilever</li>
+                <li>ICICI Bank</li>
+                <li>IndusInd Bank</li>
+                <li>Infosys</li>
+                <li>ITC</li>
+                <li>JSW Steel</li>
+                <li>Kotak Mahindra Bank</li>
+                <li>Larsen & Toubro</li>
+                <li>Mahindra & Mahindra</li>
+                <li>Maruti Suzuki</li>
+                <li>Nestlé India</li>
+                <li>NTPC</li>
+                <li>Oil & Natural Gas Corporation</li>
+                <li>Power Grid Corporation</li>
+                <li>Reliance Industries</li>
+                <li>SBI Life Insurance</li>
+                <li>State Bank of India</li>
+                <li>Sun Pharmaceutical Industries</li>
+                <li>Tata Consumer Products</li>
+                <li>Tata Motors</li>
+                <li>Tata Steel</li>
+                <li>Tata Consultancy Services</li>
+                <li>Tech Mahindra</li>
+                <li>Titan Company</li>
+                <li>UltraTech Cement</li>
+                <li>UPL</li>
+                <li>Wipro</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

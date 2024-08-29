@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #2a2a2a;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        .news-item {
+            background-color: #333;
+            padding: 1em;
+            margin-bottom: 1em;
+            border-radius: 5px;
+        }
+        h2 {
+            color: #4CAF50;
+            margin-top: 0;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>News</h1>
+        {% for item in news_data %}
+            <div class="news-item">
+                <h2>{{ item.title }}</h2>
+                <p>{{ item.summary }}</p>
+                <a href="{{ item.link }}" target="_blank">Read more</a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

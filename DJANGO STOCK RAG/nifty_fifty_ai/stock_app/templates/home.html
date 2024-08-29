@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSE NIFTY FIFTY AI</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: #2a2a2a;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+            width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        h1 {
+            color: #4CAF50;
+            font-size:xx-large;
+        }
+        input[type="text"] {
+            padding: 0.5em;
+            margin: 1em 0;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #333;
+            border: 1px solid #555;
+            color: #fff;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 0.5em 1em;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .instructions {
+            text-align: left;
+            margin-top: 2em;
+            padding: 1em;
+            background-color: #333;
+            border-radius: 5px;
+        }
+        .instructions h2 {
+            color: #4CAF50;
+        }
+        .instructions ol {
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BSE NIFTY FIFTY AI</h1>
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="api_key" placeholder="Enter your Anthropic API key" required>
+            <input type="submit" value="Submit">
+        </form>
+        
+        <div class="instructions">
+            <h2>How to Get Your Anthropic API Key</h2>
+            <ol>
+                <li>Go to the <a href="https://www.anthropic.com" target="_blank">Anthropic website</a>.</li>
+                <li>Sign up for an account or log in if you already have one.</li>
+                <li>Navigate to the API section in your account dashboard.</li>
+                <li>Generate a new API key.</li>
+                <li>Copy the API key and paste it into the input field above.</li>
+            </ol>
+            <p>Note: Keep your API key secure and do not share it with others. If you believe your key has been compromised, generate a new one immediately.</p>
+            <p>For more information, visit the <a href="https://www.anthropic.com/api" target="_blank">Anthropic API documentation</a>.</p>
+        </div>
+    </div>
+</body>
+</html>
