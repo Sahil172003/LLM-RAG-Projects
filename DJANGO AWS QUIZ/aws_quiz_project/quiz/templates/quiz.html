@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="quiz-container" style="
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+">
+    <h2 style="
+        text-align: center;
+        color: #4CAF50;
+        margin-bottom: 20px;
+    ">AWS Quiz</h2>
+    <p style="
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 20px;
+    ">Question {{ question_number }} of 50</p>
+    <div id="question" style="
+        background-color: #2a2a2a;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    ">
+        <p style="
+            font-size: 18px;
+            margin-bottom: 15px;
+        ">{{ question.text }}</p>
+        <form id="answer-form">
+            {% csrf_token %}
+            <input type="hidden" name="question_id" value="{{ question.id }}">
+            {% for key, value in question.options.items %}
+                <p style="
+                    margin-bottom: 10px;
+                    padding: 10px;
+                    background-color: #3a3a3a;
+                    border-radius: 5px;
+                ">{{ key }}. {{ value }}</p>
+            {% endfor %}
+            <label for="user-answer" style="
+                display: block;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            ">Your Answer (enter option letter(s)):</label>
+            <input type="text" id="user-answer" name="answer" required style="
+                width: 100%;
+                padding: 10px;
+                background-color: #3a3a3a;
+                border: none;
+                border-radius: 5px;
+                color: #e0e0e0;
+                font-size: 16px;
+            ">
+            <button type="submit" style="
+                display: block;
+                width: 100%;
+                padding: 10px;
+                margin-top: 20px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            ">Submit</button>
+        </form>
+    </div>
+    <div id="result" style="
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #2a2a2a;
+        border-radius: 8px;
+        display: none;
+    "></div>
+    <button id="next-question" style="
+        display: none;
+        width: 100%;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    ">Next Question</button>
+</div>
+
+<script>
+    document.getElementById('answer-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch('', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = data.result;
+            resultDiv.style.display = 'block';
+            document.getElementById('next-question').style.display = 'block';
+        });
+    });
+
+    document.getElementById('next-question').addEventListener('click', function() {
+        location.reload();
+    });
+</script>
+{% endblock %}

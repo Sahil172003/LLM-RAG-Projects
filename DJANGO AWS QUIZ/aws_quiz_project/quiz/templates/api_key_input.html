@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="api-key-container" style="
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    text-align: center;
+">
+    <h2 style="
+        color: #4CAF50;
+        margin-bottom: 20px;
+        font-size: 28px;
+    ">Enter Anthropic API Key</h2>
+    <form method="post" style="margin-top: 30px;">
+        {% csrf_token %}
+        <input type="text" name="api_key" required style="
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #3a3a3a;
+            border: none;
+            border-radius: 5px;
+            color: #e0e0e0;
+            font-size: 16px;
+        " placeholder="Enter your Anthropic API key">
+        <button type="submit" style="
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        ">Start Quiz</button>
+    </form>
+</div>
+{% endblock %}
