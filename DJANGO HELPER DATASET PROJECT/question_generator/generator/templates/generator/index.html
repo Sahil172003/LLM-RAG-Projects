@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .left-panel, .right-panel {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .left-panel {
+            background-color: #2a2a2a;
+        }
+        .right-panel {
+            background-color: #333333;
+        }
+        h2 {
+            color: #ffffff;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #444444;
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #555555;
+            cursor: not-allowed;
+        }
+        #addedQuestions, #generatedQuestions {
+            margin-top: 20px;
+            border: 1px solid #444444;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .question-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #2a2a2a;
+            border-radius: 5px;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h2>Add Question</h2>
+            <form id="questionForm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="instruction">Instruction:</label>
+                    <input type="text" id="instruction" name="instruction" required>
+                </div>
+                <div class="form-group">
+                    <label for="input">Input:</label>
+                    <input type="text" id="input" name="input" required>
+                </div>
+                <div class="form-group">
+                    <label for="response">Response:</label>
+                    <input type="text" id="response" name="response" required>
+                </div>
+                <button type="submit" id="addButton">Add</button>
+            </form>
+        </div>
+        <div class="right-panel">
+            <h2>Added Questions</h2>
+            <div id="addedQuestions"></div>
+            <button id="generateButton">Generate</button>
+            <div class="loader" id="loader"></div>
+            <div id="generatedQuestions"></div>
+            <button id="downloadJsonButton" disabled>Download JSON</button>
+            <button id="downloadParquetButton" disabled>Download Parquet</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('questionForm');
+            const addedQuestions = document.getElementById('addedQuestions');
+            const generateButton = document.getElementById('generateButton');
+            const generatedQuestions = document.getElementById('generatedQuestions');
+            const downloadJsonButton = document.getElementById('downloadJsonButton');
+            const downloadParquetButton = document.getElementById('downloadParquetButton');
+            const loader = document.getElementById('loader');
+
+            let questions = [];
+            let generatedData = null;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const instruction = document.getElementById('instruction').value;
+                const input = document.getElementById('input').value;
+                const response = document.getElementById('response').value;
+
+                questions.push({instruction, input, response});
+                updateAddedQuestions();
+                form.reset();
+            });
+
+            function updateAddedQuestions() {
+                addedQuestions.innerHTML = questions.map((q, index) => `
+                    <div class="question-item">
+                        <strong>Question ${index + 1}:</strong><br>
+                        Instruction: ${q.instruction}<br>
+                        Input: ${q.input}<br>
+                        Response: ${q.response}
+                    </div>
+                `).join('');
+            }
+
+            generateButton.addEventListener('click', function() {
+                loader.style.display = 'block';
+                generateButton.disabled = true;
+                downloadJsonButton.disabled = true;
+                downloadParquetButton.disabled = true;
+
+                fetch('/generate/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({questions: questions})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    generatedData = data.results;
+                    generatedQuestions.innerHTML = JSON.stringify(generatedData, null, 2);
+                    loader.style.display = 'none';
+                    generateButton.disabled = false;
+                    downloadJsonButton.disabled = false;
+                    downloadParquetButton.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    loader.style.display = 'none';
+                    generateButton.disabled = false;
+                });
+            });
+
+            downloadJsonButton.addEventListener('click', function() {
+                if (generatedData) {
+                    const jsonData = JSON.stringify(generatedData, null, 2);
+                    const blob = new Blob([jsonData], {type: 'application/json'});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'generated_questions.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+            });
+
+            downloadParquetButton.addEventListener('click', function() {
+                if (generatedData) {
+                    fetch('/download_parquet/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify(generatedData)
+                    })
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'generated_questions.parquet';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    });
+                }
+            });
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    </script>
+</body>
+</html>
